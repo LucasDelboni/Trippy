@@ -36,4 +36,21 @@
         print_r($result);
         return $result;
     }
+    
+    function zipcodeCensius($zipCode){
+        $client = new SoapClient('http://wsf.cdyne.com/WeatherWS/Weather.asmx?wsdl');
+     
+        $function = 'getCityForecastByZIP';
+         
+        $arguments= array('getCityForecastByZIP' => array(
+                                'ZIP'   => $zipCode
+                        ));
+        $options = array('location' => 'http://wsf.cdyne.com/WeatherWS/Weather.asmx');
+         
+        $result = $client->__soapCall($function, $arguments, $options);
+         
+        echo 'Response: ';
+        print_r($result);
+        return $result;
+    }
 ?>
