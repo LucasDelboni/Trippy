@@ -25,8 +25,8 @@
          
         $arguments= array('ConvertTemp' => array(
                                 'Temperature'   => $fahrenheit,
-                                'FromUnit'      => 'degreeCelsius',
-                                'ToUnit'        => 'degreeFahrenheit'
+                                'FromUnit'      => 'degreeFahrenheit',
+                                'ToUnit'        => 'degreeCelsius'
                         ));
         $options = array('location' => 'http://www.webservicex.net/ConvertTemperature.asmx');
          
