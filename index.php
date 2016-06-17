@@ -1,20 +1,28 @@
+<pre>
 <?php
     include "api/temperatura.php";
+    include "api/aviao.php";
+
+	$destinos = json_decode(respostaLocation(), true);
+	
+	//print_r($destinos[GetBA_LocationsResponse][Country]);
+	//die();
+	
 ?>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Easy Trip</title>
+		
 	</head>
-	
 	<body>
-	<form method="GET">
-		<input type="number" name="zipCode">
-		<input type="submit">
-	</form>
-	<?php
-	    $zipcode = $_GET['zipCode'];
-	    zipcodeCensius($zipcode);
-	?>
+		<select>
+			<?php 
+				$paises = paisesDestino(respostaLocation());
+				foreach ($paises as $pais){
+					echo "<option value=".$pais.">".$pais."</option>";
+				}
+			?>
+			
+		</select>
 	</body>
 </html>
+</pre>
