@@ -97,6 +97,13 @@
 					}
 				?>
 			</select>
+			<p>Selecione a cabine</p>
+			<select name="cabine">
+				<option value="economy">Economica</option>
+				<option value="premiumEconomy">Economica premium</option>
+				<option value="business">Trabalho</option>
+				<option value="first">Primeira classe</option>
+			</select>
 			<p>Data:</p>
 			<input type="date" name="data"/>
 			<input type="submit" id='procuraPassagem' value="Procurar passagens" disabled="true"/>
