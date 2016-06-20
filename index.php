@@ -20,9 +20,9 @@
 <script>
 	function verificaCidade(){
 		var e = document.getElementById("origem");
-		var origem = e.options[e.selectedIndex].text;
+		var origem = e.options[e.selectedIndex].value;
 		e = document.getElementById("destino");
-		var destino = e.options[e.selectedIndex].text;
+		var destino = e.options[e.selectedIndex].value;
 		if(origem===destino){
 			document.getElementById('procuraPassagem').disabled = true;
 		}
@@ -52,24 +52,21 @@
 		
 		<form action="/aviao/compraPassagem.php" method="POST">
 			<p>Origem</p>
-			<select  name="origem" id="origem" onBlur="verificaCidade">
+			<select  name="origem" id="origem" onchange="verificaCidade()">
 				<?php 
-					echo '<option value="NULL">';
-					echo '';
-					echo '</option>';
-	
 					foreach($lista as $pais){
-						echo '<optgroup label="'.$pais[CountryName].'">';
+						echo '<optgroup label='.$pais[CountryName].'>';
 						
 						$cidades = $pais[City];
 						
 						if(isset($cidades[CityName])){
-							echo '<option value="'.$cidades[CityCode].'" >';
+							//
+							echo '<option value='.$cidades[CityCode].'>';
 							echo $cidades[CityName];
 							echo '</option>';
 						} else {
 							foreach($cidades as $cidade){
-								echo '<option value="'.$cidades[CityCode].'">';
+								echo '<option value='.$cidade[CityCode].'>';
 								echo $cidade[CityName];
 								echo '</option>';
 							}	
@@ -81,22 +78,19 @@
 			<p>Destino:</p>
 			<select name="destino" id='destino' onchange="verificaCidade()">
 				<?php 
-					echo '<option value="NULL">';
-					echo '';
-					echo '</option>';
 	
 					foreach($lista as $pais){
-						echo '<optgroup label="'.$pais[CountryName].'">';
+						echo '<optgroup label='.$pais[CountryName].'>';
 						
 						$cidades = $pais[City];
 						
 						if(isset($cidades[CityName])){
-							echo '<option value="'.$cidades[CityCode].'">';
+							echo '<option value='.$cidades[CityCode].'>';
 							echo $cidades[CityName];
 							echo '</option>';
 						} else {
 							foreach($cidades as $cidade){
-								echo '<option value="'.$cidades[CityCode].'">';
+								echo '<option value='.$cidade[CityCode].'>';
 								echo $cidade[CityName];
 								echo '</option>';
 							}	
@@ -104,7 +98,7 @@
 					}
 				?>
 			</select>
-			<input type="submit" id='procuraPassagem' value="Procurar passagens"/>
+			<input type="submit" id='procuraPassagem' value="Procurar passagens" disabled="true"/>
 		</form>
 	</body>
 </html>
