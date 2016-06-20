@@ -74,7 +74,6 @@
 					}
 				?>
 			</select>
-			<p>Data:</p>
 			<p>Destino:</p>
 			<select name="destino" id='destino' onchange="verificaCidade()">
 				<?php 
@@ -98,6 +97,8 @@
 					}
 				?>
 			</select>
+			<p>Data:</p>
+			<input type="date" name="data"/>
 			<input type="submit" id='procuraPassagem' value="Procurar passagens" disabled="true"/>
 		</form>
 	</body>
