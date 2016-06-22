@@ -2,37 +2,35 @@
     function converter($moeda){
         switch ($moeda){
             case 'EUR':
-                $moeda=21620;
+                $moeda = 21620;
                 break;
             case 'BRL':
                 return 1;
             case 'JPY':
-                $moeda=21622;
+                $moeda = 21622;
                 break;
             case 'GBP':
                 $moeda = 21624;
                 break;
-            case: 'CHF':
-                $moeda=21626;
+            case 'CHF':
+                $moeda = 21626;
                 break;
             case 'DKK':
-                $moeda= 21628;
+                $moeda = 21628;
                 break;
             case 'NOK':
                 $moeda = 21630;
                 break;
             case 'SEK':
-                $moeda =21632;
+                $moeda = 21632;
                 break;
             case 'AUD':
                 $moeda = 21634;
                 break;
             case 'CAD':
-                $moeda=21636;
+                $moeda = 21636;
                 break;
         }
-        
-        
         
         $client = new SoapClient('bancocentral.wsdl');
         $function = 'getUltimoValorXML';
@@ -43,8 +41,9 @@
         $options = array('location' => 'https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS');
          
         $result = $client->__soapCall($function, $arguments, $options);
-
+        var_dump($result);
         $xml = simplexml_load_string($result, "SimpleXMLElement", LIBXML_NOCDATA);
+        var_dump($xml);
         $json = json_encode($xml);
         $array = json_decode($json,TRUE);
         $array[SERIE][VALOR] = str_replace(',', '.', $array[SERIE][VALOR]);
@@ -85,6 +84,6 @@
 ?>
 <html>
     <body>
-        <pre><?php echo emReais(500.20, 1);?></pre>
+        <pre><?php echo emReais(500.20, 'DKK');?></pre>
     </body>
 </html>

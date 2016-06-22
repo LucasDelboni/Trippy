@@ -280,7 +280,7 @@
                     "TotalPrice": 706
                 }]
             }
-        }'
+        }';
         return $retorno;
     }
 ?>
