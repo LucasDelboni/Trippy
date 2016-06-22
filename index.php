@@ -3,6 +3,8 @@ include "$_SERVER[DOCUMENT_ROOT]/includes/usa_api.inc.php";
 include "$_SERVER[DOCUMENT_ROOT]/includes/valida_session.inc.php";
 include "api/temperatura.php";
 include "api/aviao.php";
+include "api/moeda.php";
+
 
 $destinos = json_decode(respostaLocation(), true);
 
@@ -18,6 +20,12 @@ $size = 80;
 
 $grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
 // GRAVATAR
+
+if (!empty($_POST['adicionaviagem'])) {
+  if(){
+    
+  }
+}
 
 ?>
 
@@ -43,11 +51,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css"> 
+  <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
   <!-- daterange picker -->
-  <link rel="stylesheet" href="../../plugins/daterangepicker/daterangepicker-bs3.css">
+  <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker-bs3.css">
   <!-- Bootstrap time Picker -->
-  <link rel="stylesheet" href="../../plugins/timepicker/bootstrap-timepicker.min.css">
+  <link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="../../plugins/select2/select2.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -91,19 +101,34 @@ desired effect
   <!-- Main Header -->
   <header class="main-header">
     <script>
-  	function verificaCidade(){
-  		var e = document.getElementById("origem");
-  		var origem = e.options[e.selectedIndex].value;
-  		e = document.getElementById("destino");
-  		var destino = e.options[e.selectedIndex].value;
-  		if(origem===destino){
-  			document.getElementById('procuraPassagem').disabled = true;
-  		}
-  		else{
-  			document.getElementById('procuraPassagem').disabled = false;
-  		}
-    }
-  </script>
+    	function verificaCidade1(){
+    		var e = document.getElementById("origem1");
+    		var origem = e.options[e.selectedIndex].value;
+    		e = document.getElementById("destino1");
+    		var destino = e.options[e.selectedIndex].value;
+    		if(origem===destino){
+    			document.getElementById('procuraPassagem1').disabled = true;
+    		}
+    		else{
+    			document.getElementById('procuraPassagem1').disabled = false;
+    		}
+      }
+    </script>
+    
+    <script>
+    	function verificaCidade2(){
+    		var e = document.getElementById("origem2");
+    		var origem = e.options[e.selectedIndex].value;
+    		e = document.getElementById("destino2");
+    		var destino = e.options[e.selectedIndex].value;
+    		if(origem===destino){
+    			document.getElementById('procuraPassagem2').disabled = true;
+    		}
+    		else{
+    			document.getElementById('procuraPassagem2').disabled = false;
+    		}
+      }
+    </script>
 
     <!-- Logo -->
     <a href="../index.php" class="logo">
@@ -255,17 +280,16 @@ desired effect
         <div class="col-md-12">
           <div class="box box-default collapsed-box">
             <div class="box-header">
-              <h4>Formulário</h4>
+              <h4>Procurar passagem mais barata</h4>
               <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
               </div>
             </div>    
             <div class="box-body">
               <form class= 'form-inline' action="<?=$_SERVER['PHP_SELF']?>" method="POST">
                   <div class="form-group">
                     <label for="origem">Origem</label>
-                    <select  name="origem" id="origem" onchange="verificaCidade()">
+                    <select class = 'select2' name="origem" id="origem1" onchange="verificaCidade1()" style="width: 100%;">
             				<?php 
             					foreach($lista as $pais){
             						echo '<optgroup label='.$pais[CountryName].'>';
@@ -290,7 +314,7 @@ desired effect
                 </div>
                 <div class="form-group">
                     <label for="destino">Origem</label>
-                    <select name="destino" id='destino' onchange="verificaCidade()">
+                    <select class = 'select2' name="destino" id='destino1' onchange="verificaCidade1()" style="width: 100%;">
             				<?php 
             					foreach($lista as $pais){
             						echo '<optgroup label='.$pais[CountryName].'>';
@@ -315,7 +339,7 @@ desired effect
                 </div>
                 <div class="form-group">
                     <label for="cabine">Selecione a cabine</label>
-                    <select name="cabine">
+                    <select class="form-control select2" name="cabine" style="width: 100%;">
               				<option value="economy">Economica</option>
               				<option value="premiumEconomy">Economica premium</option>
               				<option value="business">Trabalho</option>
@@ -323,18 +347,180 @@ desired effect
               			</select>
                 </div>
                 <div class="form-group">
-                    <label for="dataida">Data de Ida</label>
-              			<input type="datetime" name="dataida"/>
+                    <label for="tipo">Selecione o modulo da viagem</label>
+                    <select class="form-control select2" name="tipo" style="width: 100%;">
+              				<option value="oneWay">Somente ida</option>
+              				<option value="roundTrip">Ida e volta</option>
+              			</select>
                 </div>
+                
                 <div class="form-group">
-                    <label for="datavolta">Data de Volta</label>
-              			<input type="datetime" name="datavolta"/>
+                    <label for="range">Mais barata dentro do</label>
+                    <select class="form-control select2" name="range" style="width: 100%;">
+              				<option value="monthLow">Mês</option>
+              				<option value="yearLow">Ano</option>
+              			</select>
                 </div>
-          			<input class="btn btn-default btn-block btn-sm" type="submit" id='procuraPassagem' value="Procurar passagens" disabled="true"/>
+
+                </br></br>
+          			<input class="btn btn-default btn-block btn-sm" type="submit" id='procuraPassagem1' name="procuraPassagem1" value="Procurar passagens" disabled="true"/>
           		</form>
             </div>
           </div>
         </div>
+        <div class="col-md-12">
+          <div class="box box-default collapsed-box">
+            <div class="box-header">
+              <h4>Procurar passagem por data</h4>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+              </div>
+            </div>    
+            <div class="box-body">
+              <form class= 'form-inline' action="<?=$_SERVER['PHP_SELF']?>" method="POST">
+                  <div class="form-group">
+                    <label for="origem">Origem</label>
+                    <select class = 'select2' name="origem" id="origem2" onchange="verificaCidade2()" style="width: 100%;">
+            				<?php 
+            					foreach($lista as $pais){
+            						echo '<optgroup label='.$pais[CountryName].'>';
+            						
+            						$cidades = $pais[City];
+            						
+            						if(isset($cidades[CityName])){
+            							//
+            							echo '<option value='.$cidades[CityCode].'>';
+            							echo $cidades[CityName];
+            							echo '</option>';
+            						} else {
+            							foreach($cidades as $cidade){
+            								echo '<option value='.$cidade[CityCode].'>';
+            								echo $cidade[CityName];
+            								echo '</option>';
+            							}	
+            						}
+            					}
+            				?>
+            			</select>
+                </div>
+                <div class="form-group">
+                    <label for="destino">Origem</label>
+                    <select class = 'select2' name="destino" id='destino2' onchange="verificaCidade2()" style="width: 100%;">
+            				<?php 
+            					foreach($lista as $pais){
+            						echo '<optgroup label='.$pais[CountryName].'>';
+            						
+            						$cidades = $pais[City];
+            						
+            						if(isset($cidades[CityName])){
+            							//
+            							echo '<option value='.$cidades[CityCode].'>';
+            							echo $cidades[CityName];
+            							echo '</option>';
+            						} else {
+            							foreach($cidades as $cidade){
+            								echo '<option value='.$cidade[CityCode].'>';
+            								echo $cidade[CityName];
+            								echo '</option>';
+            							}	
+            						}
+            					}
+            				?>
+            			</select>
+                </div>
+                <div class="form-group">
+                    <label for="cabine">Selecione a cabine</label>
+                    <select class="form-control select2" name="cabine" style="width: 100%;">
+              				<option value="economy">Economica</option>
+              				<option value="premiumEconomy">Economica premium</option>
+              				<option value="business">Trabalho</option>
+              				<option value="first">Primeira classe</option>
+              			</select>
+                </div>
+
+                
+                <div class="form-group">
+                  <label for="datas">Datas:</label>
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-clock-o"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right" name="datas" id="reservationtime">
+                  </div>
+
+                  <!-- /.input group -->
+                </div>
+                
+                <div class="form-group">
+                    <p>Numero de adultos</p>
+                    <input type="number" min="0" step="1" name="numeroAdulto"/>
+                </div>
+                
+                <div class="form-group">
+                    <p>Numero de crianças </p>
+                    <input type="number" min="0" step="1" name="numeroCrianças"/>
+                </div>
+                
+                <div class="form-group">
+                    <p>Numero de infantil</p>
+                    <input type="number" min="0" step="1" name="numeroInfantil"/>
+                </div>
+                
+                
+                </br></br>
+          			<input class="btn btn-default btn-block btn-sm" type="submit" id='procuraPassagem2' name="procuraPassagem2" value="Procurar passagens" disabled="true"/>
+          		</form>
+            </div>
+          </div>
+        </div>
+        
+        <?php
+        
+          //if(!empty($_POST)){
+          if(true){
+            $jsonMenorPreco = respostaCertaNaoMexeNissoVouTeMatar();
+            $array = json_decode($jsonMenorPreco, TRUE);
+            $voos = $array[OTA_AirLowFareSearchRS][PricedItineraries][PricedItinerary];
+            
+            foreach($voos as $key=>$voo){
+              $opcoes = $voo[AirItinerary][OriginDestinationOptions][OriginDestinationOption][FlightSegment];
+              $preco = $voo[AirItineraryPricingInfo][ItinTotalFare][TotalFare];
+              echo '<div class="col-md-4">';
+                echo '<div class="box">';
+                  echo '<div class="box-body">';
+                    echo 'Saída: '.$opcoes['@DepartureDateTime'].'</br>';
+                    echo 'Chegada: '.$opcoes['@ArrivalDateTime'].'</br>';
+                    echo 'Número do voo: '.$opcoes['@FlightNumber'].'</br>';
+                    echo 'País de Saída: '.$opcoes[DepartureAirport]['@LocationCode'].'</br>';
+                    echo 'País de Chegada: '.$opcoes[ArrivalAirport]['@LocationCode'].'</br>';
+                    echo 'Companhia Áerea: '.$opcoes[OperatingAirline]['@CompanyShortName'].'</br>';
+                    echo 'Assento: '.$opcoes[TPA_Extensions][CabinInfo]['@CabinName'].'</br>';
+                    echo 'Preço: '.$preco['@Amount'].'</br>';
+                    echo 'Moeda: '.$preco['@CurrencyCode'].'</br>';
+                    
+                    $reais = emReais($preco['@Amount'], $preco['@CurrencyCode']);
+                    
+                    
+                    echo '<form class= "form-inline" action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+                      echo '<div class="form-group">';
+                        echo '<label for="preco">Preço em Reais</label>';
+                        echo '<input type="type" name="preco" value="'.$reais.'" readonly/>';
+                      echo '</div>';
+                      echo '<input class="btn btn-default btn-block btn-sm" type="submit" id="adicionaviagem" name="adicionaviagem" value="Adicionar"/>';
+                    echo '</form>';
+                    
+                    
+                  echo '</div>';
+                echo '</div>';
+              echo '</div>';
+            }
+            
+            
+          }
+        
+        
+        
+        ?>
         
         <?php
           if(!empty($_POST)){
@@ -460,19 +646,101 @@ desired effect
 <script src="../plugins/datatables/jquery.dataTables.js"></script>
 <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
 <!-- SlimScroll -->
-<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="../plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
-<script src="../../plugins/fastclick/fastclick.js"></script>
+<script src="../plugins/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/app.min.js"></script>
 <!-- FLOT CHARTS -->
-<script src="../../plugins/flot/jquery.flot.min.js"></script>
+<script src="../plugins/flot/jquery.flot.min.js"></script>
 <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
-<script src="../../plugins/flot/jquery.flot.resize.min.js"></script>
+<script src="../plugins/flot/jquery.flot.resize.min.js"></script>
 <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
-<script src="../../plugins/flot/jquery.flot.pie.min.js"></script>
+<script src="../plugins/flot/jquery.flot.pie.min.js"></script>
 <!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
-<script src="../../plugins/flot/jquery.flot.categories.min.js"></script>
+<script src="../plugins/flot/jquery.flot.categories.min.js"></script>
+
+<!-- Select2 -->
+<script src="../plugins/select2/select2.full.min.js"></script>
+<!-- InputMask -->
+<script src="../plugins/input-mask/jquery.inputmask.js"></script>
+<script src="../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="../plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<!-- date-range-picker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+<script src="../plugins/daterangepicker/daterangepicker.js"></script>
+<!-- bootstrap color picker -->
+<script src="../plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
+<!-- bootstrap time picker -->
+<script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<!-- SlimScroll 1.3.0 -->
+<script src="../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- iCheck 1.0.1 -->
+<script src="../plugins/iCheck/icheck.min.js"></script>
+
+<!-- Page script -->
+<script>
+  $(function () {
+    //Initialize Select2 Elements
+    $(".select2").select2();
+
+    //Datemask dd/mm/yyyy
+    $("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+    //Datemask2 mm/dd/yyyy
+    $("#datemask2").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
+    //Money Euro
+    $("[data-mask]").inputmask();
+
+    //Date range picker
+    $('#reservation').daterangepicker();
+    //Date range picker with time picker
+    $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 5, format: 'YYYY-MM-DDTHH:mm:ssZ'});
+    //Date range as a button
+    $('#daterange-btn').daterangepicker(
+        {
+          ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+          startDate: moment().subtract(29, 'days'),
+          endDate: moment()
+        },
+        function (start, end) {
+          $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+    );
+
+    //iCheck for checkbox and radio inputs
+    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue'
+    });
+    //Red color scheme for iCheck
+    $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+      checkboxClass: 'icheckbox_minimal-red',
+      radioClass: 'iradio_minimal-red'
+    });
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass: 'iradio_flat-green'
+    });
+
+    //Colorpicker
+    $(".my-colorpicker1").colorpicker();
+    //color picker with addon
+    $(".my-colorpicker2").colorpicker();
+
+    //Timepicker
+    $(".timepicker").timepicker({
+      showInputs: false
+    });
+  });
+</script>
 
 <script>
     $(document).on("click", ".open-DeletaDialog", function () {
@@ -547,7 +815,8 @@ $.plot("#bar-chart", [bar_data], {
   }
 });
 /* END BAR CHART */
-  
+
+    
 </script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
