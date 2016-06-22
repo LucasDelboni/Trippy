@@ -30,20 +30,22 @@
             case 'CAD':
                 $moeda = 21636;
                 break;
+            default:
+                return -1;
         }
         
-        $client = new SoapClient('bancocentral.wsdl');
+        $client = new SoapClient($_SERVER[DOCUMENT_ROOT].'/api/bancocentral.wsdl');
         $function = 'getUltimoValorXML';
          
         $arguments= array('getUltimoValorXML' => array(
-                                'in0'   => '21620'
+                                'in0'   => $moeda
                         ));
         $options = array('location' => 'https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS');
          
         $result = $client->__soapCall($function, $arguments, $options);
-        var_dump($result);
+        //var_dump($result);
         $xml = simplexml_load_string($result, "SimpleXMLElement", LIBXML_NOCDATA);
-        var_dump($xml);
+        //var_dump($xml);
         $json = json_encode($xml);
         $array = json_decode($json,TRUE);
         $array[SERIE][VALOR] = str_replace(',', '.', $array[SERIE][VALOR]);
@@ -78,12 +80,7 @@
     function emReais($valor, $moeda){
         
         $cambio = (converter($moeda));
-        return 'Valor: '.$valor.' | Moeda: '.$moeda.' | Cambio: '.$cambio.' | Resultado: '.$cambio*$valor;
+        return $cambio*$valor;
         
     }
 ?>
-<html>
-    <body>
-        <pre><?php echo emReais(500.20, 'DKK');?></pre>
-    </body>
-</html>
