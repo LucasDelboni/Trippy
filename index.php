@@ -22,9 +22,28 @@ $grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) 
 // GRAVATAR
 
 if (!empty($_POST['adicionaviagem'])) {
-  if(){
-    
+  if(empty($dados_usuario[email])){
+    header("Location: ../usuario/login.php");
+  } else {
+    $_SESSION[carrinho][count($_SESSION[carrinho])] = array(
+        'tipo' => 'Viagem',
+        'numero' => $_POST[numero],
+        'preco' => $_POST[preco]
+      );
   }
+}
+
+function horario($datas, $i){
+  if($i==0){
+    $data = str_split($datas,19);
+    $data = $data[0].'Z';
+    return $data;
+  }
+  $data=str_split($datas,28);
+  $nova = $data[1];
+  $nova = str_split($nova,19);
+  $nova = $nova[0].'Z';
+  return $nova;
 }
 
 ?>
@@ -96,6 +115,11 @@ desired effect
 |---------------------------------------------------------|
 -->
 <body class="hold-transition skin-black layout-boxed sidebar-mini">
+<pre>
+  <?php
+    print_r($_SESSION);
+  ?>
+</pre>
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -153,7 +177,7 @@ desired effect
             <!-- Menu toggle button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-shopping-cart"></i>
-              <span class="label label-success"><?=$dados_usuario[qtd]?></span>
+              <span class="label label-success"><?=count($_SESSION[carrinho])?></span>
             </a>
             <ul class="dropdown-menu">
               <?php
@@ -161,31 +185,24 @@ desired effect
                   echo '<li class="header">Você precisa estar logado para usar o carrinho</li>';
                 } else {
                   echo '
-                    <li class="header">You have 4 messages</li>
+                    <li class="header">Seus Itens</li>
                     <li>
                       <!-- inner menu: contains the messages -->
-                      <ul class="menu">
-                        <li><!-- start message -->
-                          <a href="#">
-                            <div class="pull-left">
-                              <!-- User Image -->
-                              <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                            </div>
-                            <!-- Message title and timestamp -->
-                            <h4>
-                              Support Team
-                              <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                            </h4>
-                            <!-- The message -->
-                            <p>Why not buy a new awesome theme?</p>
-                          </a>
-                        </li>
-                        <!-- end message -->
+                      <ul class="menu">';
+                        foreach($_SESSION[carrinho] as $item){
+                          echo '<li>
+                            <a href="#">';
+                            echo '<h4>';
+                              echo $item[tipo];
+                            echo '</h4>';
+                            echo '<p>Número: '.$item[numero].' Preço: '.$item[preco].'</p>';
+                          echo '</a>
+                          </li>';
+                        }
+                      echo '
                       </ul>
                       <!-- /.menu -->
-                    </li>
-                    <li class="footer"><a href="#">See All Messages</a></li>
-                  ';
+                    </li>';
                 }
               
               
@@ -277,7 +294,7 @@ desired effect
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
           <div class="box box-default collapsed-box">
             <div class="box-header">
               <h4>Procurar passagem mais barata</h4>
@@ -286,7 +303,7 @@ desired effect
               </div>
             </div>    
             <div class="box-body">
-              <form class= 'form-inline' action="<?=$_SERVER['PHP_SELF']?>" method="POST">
+              <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
                   <div class="form-group">
                     <label for="origem">Origem</label>
                     <select class = 'select2' name="origem" id="origem1" onchange="verificaCidade1()" style="width: 100%;">
@@ -368,7 +385,7 @@ desired effect
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-6">
           <div class="box box-default collapsed-box">
             <div class="box-header">
               <h4>Procurar passagem por data</h4>
@@ -377,7 +394,7 @@ desired effect
               </div>
             </div>    
             <div class="box-body">
-              <form class= 'form-inline' action="<?=$_SERVER['PHP_SELF']?>" method="POST">
+              <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
                   <div class="form-group">
                     <label for="origem">Origem</label>
                     <select class = 'select2' name="origem" id="origem2" onchange="verificaCidade2()" style="width: 100%;">
@@ -431,10 +448,9 @@ desired effect
                 <div class="form-group">
                     <label for="cabine">Selecione a cabine</label>
                     <select class="form-control select2" name="cabine" style="width: 100%;">
-              				<option value="economy">Economica</option>
-              				<option value="premiumEconomy">Economica premium</option>
-              				<option value="business">Trabalho</option>
-              				<option value="first">Primeira classe</option>
+              				<option value="Economy">Economica</option>
+              				<option value="First">Primeira classe</option>
+              				<option value="Business">Trabalho</option>
               			</select>
                 </div>
 
@@ -452,18 +468,18 @@ desired effect
                 </div>
                 
                 <div class="form-group">
-                    <p>Numero de adultos</p>
-                    <input type="number" min="0" step="1" name="numeroAdulto"/>
+                    <label for="numeroAdulto">Numero de adultos</label>
+                    <input class = "form-control" type="number" min="0" step="1" name="numeroAdulto" id="numeroAdulto"/>
                 </div>
                 
                 <div class="form-group">
-                    <p>Numero de crianças </p>
-                    <input type="number" min="0" step="1" name="numeroCrianças"/>
+                    <label for="numeroCriancas">Numero de crianças</label>
+                    <input class = "form-control" type="number" min="0" step="1" name="numeroCriancas" id="numeroCriancas"/>
                 </div>
                 
                 <div class="form-group">
-                    <p>Numero de infantil</p>
-                    <input type="number" min="0" step="1" name="numeroInfantil"/>
+                    <label for="numeroInfantil">Numero de infantil</label>
+                    <input class = "form-control" type="number" min="0" step="1" name="numeroInfantil" id="numeroInfantil"/>
                 </div>
                 
                 
@@ -475,13 +491,26 @@ desired effect
         </div>
         
         <?php
-        
-          //if(!empty($_POST)){
-          if(true){
-            $jsonMenorPreco = respostaCertaNaoMexeNissoVouTeMatar();
+          if(!empty($_POST[numeroAdulto])){
+            
+            $datas = $_POST[datas];
+            $origem = $_POST[origem];
+            $destino = $_POST[destino];
+            $cabine = $_POST[cabine];
+            $numeroAdultos = $_POST[numeroAdulto];
+            $numeroCriancas = $_POST[numeroCriancas];
+            $numeroInfantil = $_POST[numeroInfantil];
+            
+            $cabine="Economy";
+            $horario =horario($datas,0);
+            
+            //$jsonMenorPreco = procuraPassagem($horario, $origem, $destino, $cabine, $numeroAdultos, $numeroCriancas, $numeroInfantil);
+            //$jsonMenorPreco = respostaCertaNaoMexeNissoVouTeMatar();
             $array = json_decode($jsonMenorPreco, TRUE);
+            //print_r($jsonMenorPreco);
             $voos = $array[OTA_AirLowFareSearchRS][PricedItineraries][PricedItinerary];
             
+            echo '<h1>Ida</h1>';
             foreach($voos as $key=>$voo){
               $opcoes = $voo[AirItinerary][OriginDestinationOptions][OriginDestinationOption][FlightSegment];
               $preco = $voo[AirItineraryPricingInfo][ItinTotalFare][TotalFare];
@@ -490,7 +519,6 @@ desired effect
                   echo '<div class="box-body">';
                     echo 'Saída: '.$opcoes['@DepartureDateTime'].'</br>';
                     echo 'Chegada: '.$opcoes['@ArrivalDateTime'].'</br>';
-                    echo 'Número do voo: '.$opcoes['@FlightNumber'].'</br>';
                     echo 'País de Saída: '.$opcoes[DepartureAirport]['@LocationCode'].'</br>';
                     echo 'País de Chegada: '.$opcoes[ArrivalAirport]['@LocationCode'].'</br>';
                     echo 'Companhia Áerea: '.$opcoes[OperatingAirline]['@CompanyShortName'].'</br>';
@@ -503,6 +531,10 @@ desired effect
                     
                     echo '<form class= "form-inline" action="'.$_SERVER['PHP_SELF'].'" method="POST">';
                       echo '<div class="form-group">';
+                        echo '<label for="numero">Número do voo</label>';
+                        echo '<input type="type" name="numero" value="'.$opcoes['@FlightNumber'].'" readonly/>';
+                      echo '</div>';
+                      echo '<div class="form-group">';
                         echo '<label for="preco">Preço em Reais</label>';
                         echo '<input type="type" name="preco" value="'.$reais.'" readonly/>';
                       echo '</div>';
@@ -513,9 +545,64 @@ desired effect
                   echo '</div>';
                 echo '</div>';
               echo '</div>';
+              
+              
+            
             }
+            echo '<h1>volta</h1>';
             
+            $horario =horario($datas,1);
             
+            //$jsonMenorPreco = procuraPassagem($horario, $destino, $origem, $cabine, $numeroAdultos, $numeroCriancas, $numeroInfantil);
+            //$jsonMenorPreco = respostaCertaNaoMexeNissoVouTeMatar();
+            $array = json_decode($jsonMenorPreco, TRUE);
+            //print_r($jsonMenorPreco);
+            $voos = $array[OTA_AirLowFareSearchRS][PricedItineraries][PricedItinerary];
+            
+            foreach($voos as $key=>$voo){
+              $opcoes = $voo[AirItinerary][OriginDestinationOptions][OriginDestinationOption][FlightSegment];
+              $preco = $voo[AirItineraryPricingInfo][ItinTotalFare][TotalFare];
+              echo '<div class="col-md-4">';
+                echo '<div class="box">';
+                  echo '<div class="box-body">';
+                    echo 'Saída: '.$opcoes['@DepartureDateTime'].'</br>';
+                    echo 'Chegada: '.$opcoes['@ArrivalDateTime'].'</br>';
+                    echo 'País de Saída: '.$opcoes[DepartureAirport]['@LocationCode'].'</br>';
+                    echo 'País de Chegada: '.$opcoes[ArrivalAirport]['@LocationCode'].'</br>';
+                    echo 'Companhia Áerea: '.$opcoes[OperatingAirline]['@CompanyShortName'].'</br>';
+                    echo 'Assento: '.$opcoes[TPA_Extensions][CabinInfo]['@CabinName'].'</br>';
+                    echo 'Preço: '.$preco['@Amount'].'</br>';
+                    echo 'Moeda: '.$preco['@CurrencyCode'].'</br>';
+                    
+                    $reais = emReais($preco['@Amount'], $preco['@CurrencyCode']);
+                    
+                    
+                    echo '<form class= "form-inline" action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+                      echo '<div class="form-group">';
+                        echo '<label for="numero">Número do voo</label>';
+                        echo '<input type="type" name="numero" value="'.$opcoes['@FlightNumber'].'" readonly/>';
+                      echo '</div>';
+                      echo '<div class="form-group">';
+                        echo '<label for="preco">Preço em Reais</label>';
+                        echo '<input type="type" name="preco" value="'.$reais.'" readonly/>';
+                      echo '</div>';
+                      echo '<input class="btn btn-default btn-block btn-sm" type="submit" id="adicionaviagem" name="adicionaviagem" value="Adicionar"/>';
+                    echo '</form>';
+                    
+                    
+                  echo '</div>';
+                echo '</div>';
+              echo '</div>';
+              
+              
+            
+            }
+          }
+          else if($_POST['range']){
+            $jsonMenorPreco = respostaMenorPreco();
+            $array = json_decode($jsonMenorPreco, TRUE);
+            $voo = $voos = $array[PricedItinerariesResponse][PricedItinerary];
+            //print_r($voo);
           }
         
         

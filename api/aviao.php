@@ -1051,12 +1051,10 @@
     } 
     
     //exemplo horario: 2016-08-22T00:00:00-03:00
-    function procuraPassagem($horario, $origem, $destino, $cabine, $numeroAdultos, $numeroCriancas, $numeroInfantil, $formato){
+    function procuraPassagem($horario, $origem, $destino, $cabine, $numeroAdultos, $numeroCriancas, $numeroInfantil){
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.ba.com/rest-v1/v1/flightOfferMktAffiliates;
-        departureDateTimeOutbound='.$horario.';locationCodeOriginOutbound='.$origem.';
-        locationCodeDestinationOutbound='.$destino.';cabin='.$cabine.';ADT='.$numeroAdultos.';CHD='.$numeroCriancas.'
-        ;INF='.$numeroCriancas.';format=.json');
+        $url ='https://api.ba.com/rest-v1/v1/flightOfferMktAffiliates;departureDateTimeOutbound='.$horario.';locationCodeOriginOutbound='.$origem.';locationCodeDestinationOutbound='.$destino.';cabin='.$cabine.';ADT='.$numeroAdultos.';CHD='.$numeroCriancas.';INF='.$numeroCriancas.';format=.json';
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Client-Key: 79hzmmeae79pbh47gccrymmr'));
         
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
@@ -1066,5 +1064,3 @@
         return $result;//um json gigante
     }
 ?>
-
-
