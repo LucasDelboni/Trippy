@@ -1,0 +1,32 @@
+{2016/06/20 04:20:06} [Info] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@sandbox.pagseguro.com.br',
+)) - begin 
+{2016/06/20 04:20:08} [Error] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@sandbox.pagseguro.com.br',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2016/06/20 04:48:13} [Info] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@sandbox.pagseguro.com.br',
+)) - begin 
+{2016/06/20 04:48:15} [Error] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@sandbox.pagseguro.com.br',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2016/06/20 04:50:08} [Info] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@sandbox.pagseguro.com.br',
+)) - begin 
+{2016/06/20 04:50:09} [Error] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@sandbox.pagseguro.com.br',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2016/06/20 05:04:17} [Info] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@comprador.com.br',
+)) - begin 
+{2016/06/20 05:04:19} [Error] PagSeguroDirectPaymentService.Register(PagSeguroRequest: array (
+  'Reference' => 'REF123',
+  'SenderEmail' => 'email@comprador.com.br',
+)) - error [HTTP 401] - UNAUTHORIZED  

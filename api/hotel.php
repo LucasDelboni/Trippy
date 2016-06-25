@@ -4,9 +4,8 @@
     //exemplo de data de chegada: 2016-06-21T12:00:00Z ->YYYY-MM-DDTHH:mm:ssZ
     function procuraHotel($pais, $cidade, $dataChegada, $numeroNoites){
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.ba.com/rest-v1/v1/hotels;countryCode='.$pais.';
-        cityCode='.$cidade.';checkInDate='.$dataChegada.';numberOfNights='.$numeroNoites.';format=.json');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Client-Key: '.$chaveHotel));//ESSA CHAVE NAO É MINHA, USEM COM CUIDADO
+        curl_setopt($ch, CURLOPT_URL, 'https://api.ba.com/rest-v1/v1/hotels;countryCode='.$pais.';cityCode='.$cidade.';checkInDate='.$dataChegada.';numberOfNights='.$numeroNoites.';format=.json');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Client-Key: 6fnttsbws8s2rmek4ef4br59'));//ESSA CHAVE NAO É MINHA, USEM COM CUIDADO
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
         
         $result = curl_exec($ch);
