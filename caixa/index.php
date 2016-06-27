@@ -2,6 +2,10 @@
 include "$_SERVER[DOCUMENT_ROOT]/includes/usa_api.inc.php";
 include "$_SERVER[DOCUMENT_ROOT]/includes/valida_session.inc.php";
 
+if(empty($dados_usuario[email])){
+  header("Location: ../usuario/login.php");
+}
+
 // GRAVATAR
 $email = $dados_usuario[email];
 $default = "retro";
@@ -122,7 +126,7 @@ desired effect
     <!-- Logo -->
     <a href="../index.php" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>bb</b></span>
+      <span class="logo-mini"><b>ET</b></span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg">Easy<b>Trip</b></span>
     </a>
@@ -188,12 +192,9 @@ desired effect
     <section class="sidebar">
 
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel">
-        <?php
-          if(!$dados_usuario[validade]){
-            echo '<a href="../usuario/login.php" class="btn btn-default btn-block btn-sm"><font color="black"><b>Entrar</b></font></a>';
-            echo '<a href="../usuario/cadastro.php" class="btn btn-info btn-block btn-sm"><font color="black"><b>Cadastro</b></font></a>';
-          } else {
+      <?php
+          if($dados_usuario[validade]){
+            echo '<div class="user-panel">';
             echo '<div class="pull-left image">
                     <img src="'.$grav_url.'" class="img-circle" alt="User Image">
                   </div>
@@ -203,10 +204,20 @@ desired effect
                     <!--<a href="#"><i class="fa fa-circle text-success"></i> Online</a>-->
                   </div>
                   </br></br></br>
-                  <a href="../usuario/logout.php" class="btn btn-danger btn-block btn-sm"><i class="fa fa-power-off"></i></a>';
+                  <div class="sidebar-form">
+                    <a href="../usuario/logout.php" class="btn btn-danger btn-block btn-sm">Sair</a>
+                  </div>';
+            echo '</div>';
           }  
-        ?>
-      </div>
+        
+        if(!$dados_usuario[validade]){
+          echo '<div class="sidebar-form">';
+            echo '<a href="../usuario/login.php" class="btn btn-default btn-block btn-sm"><font color="black"><b>Entrar</b></font></a>';
+            echo '<a href="../usuario/cadastro.php" class="btn btn-info btn-block btn-sm"><font color="black"><b>Cadastro</b></font></a>';
+          echo '</div>';
+        }
+      
+      ?>
 
       <!-- search form (Optional)
       <form action="#" method="get" class="sidebar-form">
@@ -273,6 +284,7 @@ desired effect
                     <th> <strong>Tipo</strong> </th>
                     <th> <strong>Nome</strong> </th>
                     <th> <strong>Preço</strong> </th>                    
+                    <th> <strong>Estado</strong> </th>
                     <th>  </th>
                 </tr>
             </thead>
@@ -288,9 +300,12 @@ desired effect
                                     <td>' .$aux['tipo'] .'</td>
                                     <td>' .$aux['nome'] .'</td>
                                     <td>' .$aux['preco'] .'</td>
+                                    <td>' .$aux['estado'] .'</td>
+                                    <td></td>
                                     ';
                         
                     ?>
+                    <!-- TODOT: quando clicar em remover, deletar aquele array da session-->
                     <td>
                         <form class="form-horizontal"  action="" role="form" method="POST">
                             <button type="button" data-key="<?php echo $key?>" class="open-DeletaDialog btn btn-default" data-toggle="modal" data-target="#deletarItemVenda">
