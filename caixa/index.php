@@ -1,6 +1,8 @@
 <?php
 include "$_SERVER[DOCUMENT_ROOT]/includes/usa_api.inc.php";
 include "$_SERVER[DOCUMENT_ROOT]/includes/valida_session.inc.php";
+include "$_SERVER[DOCUMENT_ROOT]/caixa/lerArquivo.php";
+include "$_SERVER[DOCUMENT_ROOT]/api/compras.php";
 
 if(empty($dados_usuario[email])){
   header("Location: ../usuario/login.php");
@@ -13,6 +15,11 @@ $size = 80;
 
 $grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
 // GRAVATAR
+
+if (!empty($_POST[removeritem])) {
+  unset($_SESSION[carrinho][$_POST[id]]);
+  $_SESSION[carrinho] = array_values($_SESSION[carrinho]);
+}
 
 ?>
 
@@ -305,12 +312,10 @@ desired effect
                                     ';
                         
                     ?>
-                    <!-- TODOT: quando clicar em remover, deletar aquele array da session-->
                     <td>
-                        <form class="form-horizontal"  action="" role="form" method="POST">
-                            <button type="button" data-key="<?php echo $key?>" class="open-DeletaDialog btn btn-default" data-toggle="modal" data-target="#deletarItemVenda">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remover
-                            </button>
+                        <form class="form-horizontal"  action="../caixa/" role="form" method="POST">
+                            <input type="hidden" name="id" value="<?= $key?>"/>
+                            <input class="btn btn-default btn-block btn-sm" type="submit" id="removeritem" name="removeritem" value="Remover"/>
                         </form>
                     </td>
                 </tr>
@@ -340,6 +345,77 @@ desired effect
       <!-- Your Page Content Here -->
 
     </section>
+    
+    
+    
+    
+    
+    <?php
+      $compras = comprasUsuario($dados_usuario[id]);
+      $json = json_encode($compras);
+      $itens = json_decode($json,TRUE);
+      
+      
+      $itens = get_object_vars($compras);
+      if($itens['@attributes'][descricao]!=='Consulta não retornou nenhum valor'){
+    ?>
+        <section class="content-header">
+          <h1>
+            Itens comprados
+          </h1>
+        </section>
+    
+        <!-- Main content -->
+        <section class="content">
+          <div class="box">
+            <div class="box-body">
+              <table class="table table-striped table-hover" id="tabela-estoque">
+                <thead>
+                    <tr>
+                        <th> <strong>ID da compra</strong> </th>
+                        <th> <strong>Nome</strong> </th>
+                        <th> <strong>Preço</strong> </th>                    
+                        <th> <strong>Estado</strong> </th>
+                        <th>  </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                  <?php
+                    for ($i=0;$i<count($compras->id_venda);$i++){
+                      echo '<tr>';
+                      echo '<td>'.$compras->id_venda[$i].'</td>';
+                      echo '<td>'.$compras->detalhes[$i].'</td>';
+                      echo '<td>'.$compras->preco[$i].'</td>';
+                      if($compras->pago[$i]=='1'){
+                        echo '<td>Pago</td>';
+                      }
+                      else{
+                        $estado = estadoCompra($compras->id_venda[$i]);
+                        if($estado==0){
+                          echo '<td>Pagamento não encontrado</td>';
+                        }
+                        else{
+                          echo '<td>'.$estado.'</td>';
+                        }
+                      }
+                      echo '</tr>';
+                    }
+                  ?>
+                    
+    
+    
+                </tbody>
+              </table>
+            </div>
+          </div>      
+          <!-- Your Page Content Here -->
+    
+        </section>
+    <?php
+      }
+    ?>
+    
     
     <!-- /.content -->
   </div>
