@@ -308,7 +308,7 @@ desired effect
                                     <td>' .$aux['nome'] .'</td>
                                     <td>' .$aux['preco'] .'</td>
                                     <td>' .$aux['estado'] .'</td>
-                                    <td></td>
+                                    <td>Aguardando pagamento</td>
                                     ';
                         
                     ?>
@@ -373,6 +373,7 @@ desired effect
                 <thead>
                     <tr>
                         <th> <strong>ID da compra</strong> </th>
+                        <th> <strong>Tipo</strong> </th>
                         <th> <strong>Nome</strong> </th>
                         <th> <strong>Preço</strong> </th>                    
                         <th> <strong>Estado</strong> </th>
@@ -382,24 +383,33 @@ desired effect
                 
                 <tbody>
                   <?php
+                    
                     for ($i=0;$i<count($compras->id_venda);$i++){
-                      echo '<tr>';
-                      echo '<td>'.$compras->id_venda[$i].'</td>';
-                      echo '<td>'.$compras->detalhes[$i].'</td>';
-                      echo '<td>'.$compras->preco[$i].'</td>';
-                      if($compras->pago[$i]=='1'){
-                        echo '<td>Pago</td>';
-                      }
-                      else{
-                        $estado = estadoCompra($compras->id_venda[$i]);
-                        if($estado==0){
-                          echo '<td>Pagamento não encontrado</td>';
+                      $linha = explode(';',$compras->detalhes[$i]);
+                      for ($j=0;$j<count($linha)-1;$j++){
+                        $caracteristicas = explode(': ',$linha[$j]);
+                        echo '<tr>';
+                        $codigo = (int)$compras->id_venda[$i];
+                        echo '<td>'.$codigo.'</td>';
+                        echo '<td>'.$caracteristicas[0].'</td>';
+                        echo '<td>'.$caracteristicas[1].'</td>';
+                        echo '<td>'.$caracteristicas[2].'</td>';
+                        if($compras->pago[$i]=='1'){
+                          echo '<td>Pago</td>';
                         }
                         else{
-                          echo '<td>'.$estado.'</td>';
+                          $estado = estadoCompra($codigo);
+                          
+                          if($estado===0){
+                            echo '<td>Pagamento não encontrado</td>';
+                          }
+                          else{
+                            echo '<td>'.$estado.'</td>';
+                          }
                         }
+                        echo '</tr>';
                       }
-                      echo '</tr>';
+                     
                     }
                   ?>
                     
