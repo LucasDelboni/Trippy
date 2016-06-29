@@ -30,6 +30,8 @@ function horario($datas, $i){
             echo '<div class="box-header">
                     <h4><b>Carros</b></h4>
                   </div>';
+            
+            if(is_array($carros)){
             foreach($carros as $key=>$carro){
               echo '<div class="col-md-4">';
                 echo '<div class="box">';
@@ -64,6 +66,10 @@ function horario($datas, $i){
               
             
             }
+          }
+           else {
+            echo "<h2>Nenhum carro foi encontrado pela API</h2>";
+          }
             echo '</div>';
             
 

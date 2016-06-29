@@ -34,6 +34,41 @@
             case 'CAD':
                 $moeda = 21636;
                 break;
+                
+                
+            //hotel nao retorna a ultima letra
+            case 'EU':
+                $moeda = 21620;
+                break;
+            case 'BR':
+                return 1;
+            case 'US':
+                $moeda = 10813;
+                break;
+            case 'JP':
+                $moeda = 21622;
+                break;
+            case 'GB':
+                $moeda = 21624;
+                break;
+            case 'CH':
+                $moeda = 21626;
+                break;
+            case 'DK':
+                $moeda = 21628;
+                break;
+            case 'NO':
+                $moeda = 21630;
+                break;
+            case 'SE':
+                $moeda = 21632;
+                break;
+            case 'AU':
+                $moeda = 21634;
+                break;
+            case 'CA':
+                $moeda = 21636;
+                break;
             default:
                 return 0;
         }
