@@ -1,11 +1,15 @@
 <?php
     function converter($moeda){
+        
         switch ($moeda){
             case 'EUR':
                 $moeda = 21620;
                 break;
             case 'BRL':
                 return 1;
+            case 'USD':
+                $moeda = 10813;
+                break;
             case 'JPY':
                 $moeda = 21622;
                 break;
@@ -31,8 +35,9 @@
                 $moeda = 21636;
                 break;
             default:
-                return -1;
+                return 0;
         }
+        
         
         $client = new SoapClient($_SERVER[DOCUMENT_ROOT].'/api/bancocentral.wsdl');
         $function = 'getUltimoValorXML';
@@ -80,6 +85,7 @@
     function emReais($valor, $moeda){
         
         $cambio = (converter($moeda));
+        
         return $cambio*$valor;
         
     }

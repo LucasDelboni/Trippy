@@ -9,8 +9,8 @@ if(isset($_SESSION[senha])) $senha_usuario = $_SESSION[senha];
 
 ini_set("soap.wsdl_cache_enabled", 0);
 
-$client = new SoapClient('http://distribuidossoap-ztck.c9users.io/webservice.php?wsdl');
-$options = array('location' => 'http://distribuidossoap-ztck.c9users.io/webservice.php');
+$client = new SoapClient('http://distribuidossoap-ztck.c9users.io/webservice?wsdl');
+$options = array('location' => 'http://distribuidossoap-ztck.c9users.io/webservice');
 
 $function = 'ValidaSecao';
  

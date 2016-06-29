@@ -2,25 +2,14 @@
 include "$_SERVER[DOCUMENT_ROOT]/includes/usa_api.inc.php";
 include "$_SERVER[DOCUMENT_ROOT]/includes/valida_session.inc.php";
 include "api/temperatura.php";
-include "api/aviao.php";
-include "api/moeda.php";
-include "api/hotel.php";
-include "api/carro.php";
 include "listadepaises.php";
-
+include "api/moeda.php";
+//include "api/hotel.php";
+//include "api/carro.php";
 
 $destinos = json_decode(respostaLocation(), true);
-
 //print_r($destinos[GetBA_LocationsResponse][Country]);
-
 $lista = $destinos[GetBA_LocationsResponse][Country];
-
-// Captura os dados de carros disponíveis, mas só se o usuário já selecionou sua busca desejada pelo form desta página
-if(isset($_GET[origem]) && isset($_GET[destino]) && isset($_GET[datas]) && $_GET[origem] != '' && $_GET[destino] != '' && $_GET[datas] != ''){
-  //pacoteCarroAviao($_GET[origem],$_GET[destino],horario($_GET[datas],1));
-  $carros = json_decode(exemploRetornoPacote());
-}
-
 
 // GRAVATAR
 $email = $dados_usuario[email];
@@ -70,7 +59,7 @@ if (!empty($_POST['adicionacarro'])) {
 }
 
 
-function horario($datas, $i){
+function horarioi($datas, $i){
   if($i==0){
     $data = str_split($datas,19);
     $data = $data[0].'Z';
@@ -83,7 +72,7 @@ function horario($datas, $i){
   return $nova;
 }
 
-function numeroNoites($chegada, $saida){
+function numeroNoitesi($chegada, $saida){
     
     //2016-06-23T00:00:00-03:00 - 2016-06-24T23:59:59-03:00
     $novaChegada = str_split($chegada,10);
@@ -138,6 +127,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect.
   -->
   <link rel="stylesheet" href="../dist/css/skins/_all-skins.min.css">
+    <!-- Pace style -->
+  <link rel="stylesheet" href="../../plugins/pace/pace.min.css">
   
 
 
@@ -168,13 +159,13 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-black layout-boxed sidebar-mini">
-<pre>
-  <?php
-    print_r($_SESSION);
-    print_r($dados_usuario);
-  ?>
-</pre>
+<body class="hold-transition skin-red layout-boxed sidebar-mini">
+  <pre>
+    <?php
+      print_r($_SESSION);
+    ?>
+  </pre>
+
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -201,10 +192,10 @@ desired effect
     		e = document.getElementById("destino2");
     		var destino = e.options[e.selectedIndex].value;
     		if(origem===destino){
-    			document.getElementById('procuraPassagem2').disabled = true;
+    			document.getElementById('procuraViagemb').disabled = true;
     		}
     		else{
-    			document.getElementById('procuraPassagem2').disabled = false;
+    			document.getElementById('procuraViagemb').disabled = false;
     		}
       }
     </script>
@@ -386,7 +377,7 @@ desired effect
               </div>
             </div>    
             <div class="box-body">
-              <form action="<?=$_SERVER['PHP_SELF']?>" method="GET">
+              <form action="" method="post" id="procuraViagem">
                   <div class="form-group">
                     <label for="origem">Origem</label>
                     <select class = 'select2' name="origem" id="origem2" onchange="verificaCidade2()" style="width: 100%;">
@@ -476,7 +467,7 @@ desired effect
                 
                 
                 </br></br>
-          			<input class="btn btn-default btn-block btn-sm" type="submit" id='procuraPassagem2' name="procuraPassagem2" value="Procurar passagens" disabled="true"/>
+          			<input class="btn btn-default btn-block btn-sm" type="submit" id='procuraViagemb' name="procuraViagem" value="Procurar passagens" disabled="true"/>
           		</form>
             </div>
           </div>
@@ -490,7 +481,7 @@ desired effect
               </div>
             </div>    
             <div class="box-body">
-              <form action="<?=$_SERVER['PHP_SELF']?>" method="GET">
+              <form action="" method="post" id="procuraHotel">
                   <div class="form-group">
                     <label for="origem">Pais</label>
                     <select class = 'select2' name="pais" id="pais" style="width: 100%;">
@@ -555,7 +546,7 @@ desired effect
               </div>
             </div>    
             <div class="box-body">
-              <form action="<?=$_SERVER['PHP_SELF']?>" method="GET">
+              <form action="" method="post" id="procuraCarro">
                 <div class="form-group">
                     <label for="destino">Cidade</label>
                     <select class = 'select2' name="cidade" id='cidade' style="width: 100%;">
@@ -600,252 +591,39 @@ desired effect
           </div>
         </div>
         </div>
+        
 
+              <div class="ajax-content">
+              
+
+        
         <?php
-          if(!empty($_GET[procuraPassagem2])){
+          if(!empty($_POST[adicionaviagem])){
             
-              $datas = $_GET[datas];
-              $origem = $_GET[origem];
-              $destino = $_GET[destino];
-              $cabine = $_GET[cabine];
-              $numeroAdultos = $_GET[numeroAdulto];
-              $numeroCriancas = $_GET[numeroCriancas];
-              $numeroInfantil = $_GET[numeroInfantil];
-
-            
-            $cabine="Economy";
-            $horario =horario($datas,0);
-            
-            //$jsonMenorPreco = procuraPassagem($horario, $origem, $destino, $cabine, $numeroAdultos, $numeroCriancas, $numeroInfantil);
-            $jsonMenorPreco = respostaCertaNaoMexeNissoVouTeMatar();
-            $array = json_decode($jsonMenorPreco, TRUE);
-            //print_r($jsonMenorPreco);
-            $voos = $array[OTA_AirLowFareSearchRS][PricedItineraries][PricedItinerary];
-            
-            echo '<div class="col-md-12">';
-            echo '<div class="box-header">
-                    <h4><b>Ida</b></h4>
-                  </div>';
-            foreach($voos as $key=>$voo){
-              $opcoes = $voo[AirItinerary][OriginDestinationOptions][OriginDestinationOption][FlightSegment];
-              $preco = $voo[AirItineraryPricingInfo][ItinTotalFare][TotalFare];
-              echo '<div class="col-md-4">';
-                echo '<div class="box">';
-                  echo '<div class="box-body">';
-                    echo 'Saída: '.$opcoes['@DepartureDateTime'].'</br>';
-                    echo 'Chegada: '.$opcoes['@ArrivalDateTime'].'</br>';
-                    echo 'País de Saída: '.$opcoes[DepartureAirport]['@LocationCode'].'</br>';
-                    echo 'País de Chegada: '.$opcoes[ArrivalAirport]['@LocationCode'].'</br>';
-                    echo 'Companhia Áerea: '.$opcoes[OperatingAirline]['@CompanyShortName'].'</br>';
-                    echo 'Assento: '.$opcoes[TPA_Extensions][CabinInfo]['@CabinName'].'</br>';
-                    echo 'Preço: '.$preco['@Amount'].'</br>';
-                    echo 'Moeda: '.$preco['@CurrencyCode'].'</br>';
-                    
-                    //$reais = emReais($preco['@Amount'], $preco['@CurrencyCode']);
-                    $reais =10;
-                    
-                    echo '<form class= "form-inline" action="'.$_SERVER[PHP_SELF].'?'.$_SERVER[QUERY_STRING].'" method="POST">';
-                      echo '<div class="form-group">';
-                        echo '<input class = "form-control" type="hidden" name="nome" value="'.$opcoes[DepartureAirport]['@LocationCode'].' para '.$opcoes[ArrivalAirport]['@LocationCode'].'" readonly/>';
-                      echo '</div>';
-                      echo '<div class="form-group">';
-                        echo '<label for="preco">Preço em Reais</label>';
-                        echo '<input class = "form-control" type="text" name="preco" value="'.$reais.'" readonly/>';
-                      echo '</div>';
-                      echo '<input class="btn btn-default btn-block btn-sm" type="submit" id="adicionaviagem" name="adicionaviagem" value="Adicionar"/>';
-                    echo '</form>';
-                    
-                    
-                  echo '</div>';
-                echo '</div>';
-              echo '</div>';
+              include 'buscaviagem.php';
               
-              
-            
-            }
-            echo '</div>';
-            echo '<div class="col-md-12">';
-            echo '<div class="box-header">
-                    <h4><b>Volta</b></h4>
-                  </div>';
-
-            
-            $horario =horario($datas,1);
-
-            //$jsonMenorPreco = procuraPassagem($horario, $destino, $origem, $cabine, $numeroAdultos, $numeroCriancas, $numeroInfantil);
-            //$jsonMenorPreco = respostaCertaNaoMexeNissoVouTeMatar();
-            $array = json_decode($jsonMenorPreco, TRUE);
-            //print_r($jsonMenorPreco);
-            $voos = $array[OTA_AirLowFareSearchRS][PricedItineraries][PricedItinerary];
-            
-            foreach($voos as $key=>$voo){
-              $opcoes = $voo[AirItinerary][OriginDestinationOptions][OriginDestinationOption][FlightSegment];
-              $preco = $voo[AirItineraryPricingInfo][ItinTotalFare][TotalFare];
-              echo '<div class="col-md-4">';
-                echo '<div class="box">';
-                  echo '<div class="box-body">';
-                    echo 'Saída: '.$opcoes['@DepartureDateTime'].'</br>';
-                    echo 'Chegada: '.$opcoes['@ArrivalDateTime'].'</br>';
-                    echo 'País de Saída: '.$opcoes[DepartureAirport]['@LocationCode'].'</br>';
-                    echo 'País de Chegada: '.$opcoes[ArrivalAirport]['@LocationCode'].'</br>';
-                    echo 'Companhia Áerea: '.$opcoes[OperatingAirline]['@CompanyShortName'].'</br>';
-                    echo 'Assento: '.$opcoes[TPA_Extensions][CabinInfo]['@CabinName'].'</br>';
-                    echo 'Preço: '.$preco['@Amount'].'</br>';
-                    echo 'Moeda: '.$preco['@CurrencyCode'].'</br>';
-                    
-                    //$reais = emReais($preco['@Amount'], $preco['@CurrencyCode']);
-                    $reais =11;
-                    
-                    echo '<form class= "form-inline" action="'.$_SERVER[PHP_SELF].'?'.$_SERVER[QUERY_STRING].'" method="POST">';
-                      echo '<div class="form-group">';
-                        echo '<label for="numero">Número do voo</label>';
-                        echo '<input class = "form-control" type="hidden" name="nome" value="'.$opcoes[DepartureAirport]['@LocationCode'].' para '.$opcoes[ArrivalAirport]['@LocationCode'].'" readonly/>';
-                      echo '</div>';
-                      echo '<div class="form-group">';
-                        echo '<label for="preco">Preço em Reais</label>';
-                        echo '<input class = "form-control" type="type" name="preco" value="'.$reais.'" readonly/>';
-                      echo '</div>';
-                      echo '<input class="btn btn-default btn-block btn-sm" type="submit" id="adicionaviagem" name="adicionaviagem" value="Adicionar"/>';
-                    echo '</form>';
-                    
-                    
-                  echo '</div>';
-                echo '</div>';
-              echo '</div>';
-              
-              
-            
-            }
-            echo '</div>';
           }
-        
-        
+          
         ?>
         <?php
-          if(!empty($_GET[procuraHotel])){
+          if(!empty($_POST[adicionahotel])){
             
-              $pais = $_GET['pais'];
-              $cidade = $_GET['cidade'];
-              $datas = $_GET['datas'];
-              $chegada = horario($datas,0);
-              $saida = horario($datas,1);
-              $numeroNoites = numeroNoites($chegada, $saida);
-
-              //ARRAY HOTEL
-                // $teste = procuraHotel('ES', 'MAD',  '2016-07-20T12:00:00Z','1');    
-                //$teste = procuraHotel($pais, $cidade,  $chegada, $numeroNoites);    
-                
-                $teste = hoteis();
-                $array = json_decode($teste, TRUE);
-  
-
-                $hoteis = $array[HotelSearchResponse][HotelSearch];
-                            
-            echo '<div class="col-md-12">';
-            echo '<div class="box-header">
-                    <h4><b>Hotéis</b></h4>
-                  </div>';
-            foreach($hoteis as $key=>$hotel){
-              echo '<div class="col-md-4">';
-                echo '<div class="box">';
-                  echo '<div class="box-body">';
-                    
-                    echo '<img src="'.$hotel[HotelImage].'" style="width:128px;height:128px;"></br>';
-                    echo 'Nome: </br>'.$hotel[HotelName].'</br>';
-                    echo 'CheckIn: '.$hotel[HotelCheckInDate].'</br>';
-                    echo 'CheckOut: '.$hotel[HotelCheckOutDate].'</br>';
-                    echo 'Estrelas: '.$hotel[HotelStarRating].'</br>';
-                    echo 'Trip Advisor: '.$hotel[tripAdvisorRating].'</br>';
-                    echo 'Número de noites: '.$hotel[NumberOfNights].'</br>';
-                    echo 'Preço por noite por pessoa: '.$hotel[PricePerPersonPerNight].'</br>';
-                    echo 'Preço Total: '.$hotel[TotalPrice].'</br>';
-                    echo 'Moeda: '.$hotel[CurrencyCode].'</br>';
-                    
-                    //$reais = emReais($hotel[TotalPrice], $hotel[CurrencyCode]);
-                    $reais =12;
-                    
-                    echo '<form class= "form-inline" action="'.$_SERVER[PHP_SELF].'?'.$_SERVER[QUERY_STRING].'" method="POST">';
-                      echo '<div class="form-group">';
-                        echo '<label for="nome_hotel">Nome do Hotel </label>';
-                        echo '<input class = "form-control" type="text" name="nome" value="'.$hotel[HotelName].'" readonly/>';
-                      echo '</div>';
-                      echo '<div class="form-group">';
-                        echo '<label for="preco">Preço em Reais </label>';
-                        echo '<input class = "form-control" type="text" name="preco" value="'.$reais.'" readonly/>';
-                      echo '</div>';
-                      echo '<input class="btn btn-default btn-block btn-sm" type="submit" id="adicionahotel" name="adicionahotel" value="Adicionar"/>';
-                    echo '</form>';
-                    
-                    
-                    
-                    
-                  echo '</div>';
-                echo '</div>';
-              echo '</div>';
+              include 'buscahotel.php';
               
-              
-            
-            }
-            
           }
 
         ?>
         
         <?php
-          if(!empty($_GET[procuraCarro])){
+          if(!empty($_POST[adicionacarro])){
             
-              $pais = $_GET['pais'];
-              $datas = $_GET['datas'];
-              $chegada = horario($datas,0);
-              $saida = horario($datas,1);
-              
-              $retorno = json_decode(exemploRetornoPacote(), true);
-              $carros = $retorno[CarPackageResponse][CarPackageSearch];
-              
-              //print_r($carros);
-              
-   
-            echo '<div class="col-md-12">';
-            echo '<div class="box-header">
-                    <h4><b>Carros</b></h4>
-                  </div>';
-            foreach($carros as $key=>$carro){
-              echo '<div class="col-md-4">';
-                echo '<div class="box">';
-                  echo '<div class="box-body">';
-                    echo '<img src="'.$carro[imgURL].'"></br>';
-                    echo 'Nome: '.$carro[carGroupDescriptionShort].'</br>';
-                    echo 'Tipo: '.$carro[carType].'</br>';
-                    echo 'Moeda: '.$carro[market].'</br>';
-                    echo 'Preço: '.$carro[totalPrice].'</br>';
-                    
-                    //$reais = emReais($carro[totalPrice], $carro[market]);
-                    $reais =13;
-                    
-                    echo '<form class= "form-inline" action="'.$_SERVER[PHP_SELF].'?'.$_SERVER[QUERY_STRING].'" method="POST">';
-                      echo '<div class="form-group">';
-                        echo '<input class = "form-control" type="hidden" name="nome" value="'.$carro[carGroupDescriptionShort].'" readonly/>';
-                      echo '</div>';
-                      echo '<div class="form-group">';
-                        echo '<label for="preco">Preço em Reais</label>';
-                        echo '<input class = "form-control" type="text" name="preco" value="'.$reais.'" readonly/>';
-                      echo '</div>';
-                      echo '<input class="btn btn-default btn-block btn-sm" type="submit" id="adicionacarro" name="adicionacarro" value="Adicionar"/>';
-                    echo '</form>';
-                    
-                    
-                  echo '</div>';
-                echo '</div>';
-              echo '</div>';
-              
-              
-            
-            }
-            echo '</div>';
-            
+              include 'buscacarro.php';
+          
           }
 
         ?>
+        
+        </div>
 
         <div class="col-md-12">
           <div class="box">
@@ -854,6 +632,23 @@ desired effect
 
             </div>
             <div class="box-body">
+              <div class="row">
+              <div class="col-xs-12 text-center">
+              <button type="button" class="btn btn-default btn-lrg ajax" title="Ajax Request">
+                <i class="fa fa-spin fa-refresh"></i>&nbsp; Get External Content
+              </button>
+              </div>
+              </div>
+              <div class="ajax-content">
+              </div>
+              <form method="post" action="" id="ajax_form">
+            		<label><input type="hidden" name="id" value="" /></label>
+            		<label>Nome: <input type="text" name="nome" value="" /></label>
+            		<label>Email: <input type="text" name="email" value="" /></label>
+            		<label>Telefone: <input type="text" name="telefone" value="" /></label>
+            
+            		<label><input type="submit" name="enviar" value="Enviar" /></label>
+            	</form>
               <pre>
                 <?php
                   $carrinho = serialize($_SESSION[carrinho]);
@@ -863,6 +658,8 @@ desired effect
                   echo urlencode($carrinho);
                   echo '</br>';
                   echo urldecode($carrinho);
+                  
+                  print_r($_POST);
                 
                 ?>
                 
@@ -991,7 +788,8 @@ desired effect
 <script src="../plugins/flot/jquery.flot.pie.min.js"></script>
 <!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
 <script src="../plugins/flot/jquery.flot.categories.min.js"></script>
-
+<!-- PACE -->
+<script src="../../plugins/pace/pace.min.js"></script>
 <!-- Select2 -->
 <script src="../plugins/select2/select2.full.min.js"></script>
 <!-- InputMask -->
@@ -1154,6 +952,123 @@ $.plot("#bar-chart", [bar_data], {
 
     
 </script>
+<script type="text/javascript">
+	// To make Pace works on Ajax calls
+	$(document).ajaxStart(function() { Pace.restart(); });
+    $('.ajax').click(function(){
+        //$.ajax({url: '#', success: function(result){
+        //    $('.ajax-content').html('');
+        //}});
+        $.ajax({
+            method: "POST",
+            url: "index.1.php",
+            data: { cidade: 'AUH', datas: '', procuraCarro: 'Procurar carros' }
+          });
+        location.reload(true);
+    });
+</script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#procuraCarro').submit(function(){
+			var dados = jQuery( this ).serialize();
+
+			jQuery.ajax({
+				type: "POST",
+				url: "buscacarro.php",
+				data: dados,
+				success: function( data )
+				{
+					$('.ajax-content').html(data);
+				}
+			});
+			
+			return false;
+		});
+	});
+	</script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#adicionacarro').submit(function(){
+			var dados = jQuery( this ).serialize();
+
+			jQuery.ajax({
+				type: "POST",
+				url: "adicionacarro.php",
+				data: dados
+			});
+			
+			return false;
+		});
+	});
+	</script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#procuraHotel').submit(function(){
+			var dados = jQuery( this ).serialize();
+
+			jQuery.ajax({
+				type: "POST",
+				url: "buscahotel.php",
+				data: dados,
+				success: function( data )
+				{
+					$('.ajax-content').html(data);
+				}
+			});
+			
+			return false;
+		});
+	});
+	</script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#adicionahotel').submit(function(){
+			var dados = jQuery( this ).serialize();
+
+			jQuery.ajax({
+				type: "POST",
+				url: "adicionahotel.php",
+				data: dados
+			});
+			
+			return false;
+		});
+	});
+	</script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#procuraViagem').submit(function(){
+			var dados = jQuery( this ).serialize();
+
+			jQuery.ajax({
+				type: "POST",
+				url: "buscaviagem.php",
+				data: dados,
+				success: function( data )
+				{
+					$('.ajax-content').html(data);
+				}
+			});
+			
+			return false;
+		});
+	});
+	</script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#adicionaviagem').submit(function(){
+			var dados = jQuery( this ).serialize();
+
+			jQuery.ajax({
+				type: "POST",
+				url: "adicionaviagem.php",
+				data: dados
+			});
+			
+			return false;
+		});
+	});
+	</script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

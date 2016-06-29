@@ -7,8 +7,8 @@ $cadastrado = FALSE;
 
 if (!empty($_POST['submitted'])) {
   
-    $client = new SoapClient('http://distribuidossoap-ztck.c9users.io/webservice.php?wsdl');
-    $options = array('location' => 'http://distribuidossoap-ztck.c9users.io/webservice.php');
+    $client = new SoapClient('http://distribuidossoap-ztck.c9users.io/webservice?wsdl');
+    $options = array('location' => 'http://distribuidossoap-ztck.c9users.io/webservice');
     
     $function = 'CadastraUsuario';
     

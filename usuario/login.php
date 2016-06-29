@@ -6,8 +6,8 @@ if (!empty($_POST['submitted'])) {
     session_start();
     
     ini_set("soap.wsdl_cache_enabled", 0);
-    $client = new SoapClient('http://distribuidossoap-ztck.c9users.io/webservice.php?wsdl');
-    $options = array('location' => 'http://distribuidossoap-ztck.c9users.io/webservice.php');
+    $client = new SoapClient('http://distribuidossoap-ztck.c9users.io/webservice?wsdl');
+    $options = array('location' => 'http://distribuidossoap-ztck.c9users.io/webservice');
     
     $function = 'ValidaSecao';
     
@@ -72,7 +72,7 @@ if (!empty($_POST['submitted'])) {
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="">Easy<b>Trip</b></a>
+    <a href="../">Easy<b>Trip</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
