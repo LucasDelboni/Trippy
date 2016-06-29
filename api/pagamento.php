@@ -176,7 +176,7 @@ class CreatePaymentRequest
 class Pagamento
 {
 
-    public static function executa($parametros)
+    public static function executa($parametros, $id)
     {
 
         //print_r($parametros[produtos]);
@@ -194,15 +194,15 @@ class Pagamento
             if(empty($produto[preco])){
                 $produto[preco] = 10.00;
             }
-            $paymentRequest->addItem($item, $produto[nome], 1, $produto[preco]);
+            $paymentRequest->addItem($item, $produto[tipo].': '.$produto[nome], 1, $produto[preco]);
             $item++;
         }
-        $carrinho = serialize($parametros);
-        $paymentRequest->addItem($item, $carrinho, 1, 10.01);
+        //$carrinho = serialize($parametros);
+        //$paymentRequest->addItem($item, $carrinho, 1, 10.01);
         
         // Set a reference code for this payment request. It is useful to identify this payment
         // in future notifications.
-        $paymentRequest->setReference("REF123");
+        $paymentRequest->setReference($id);
 
         // Set shipping information for this payment request
         $sedexCode = PagSeguroShippingType::getCodeByType('SEDEX');
@@ -229,8 +229,8 @@ class Pagamento
         );
 
         // Set the url used by PagSeguro to redirect user after checkout process ends
-        $carrinho = urlencode(serialize($parametros));
-        $paymentRequest->setRedirectUrl("https://epdistribuidos-flashfox.c9users.io/caixa/checkout.php?carrinho=".$carrinho);
+        //$carrinho = urlencode(serialize($parametros));
+        $paymentRequest->setRedirectUrl("https://epdistribuidos-flashfox.c9users.io/caixa/checkout.php");
 
         try {
 
