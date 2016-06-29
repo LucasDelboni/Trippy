@@ -4,13 +4,25 @@
         $xml = consulta($codigoNotificacao);
         $estado = leXML($xml);
         $estado = (int)$estado;
-        return $estado;
+        
+        switch ($estado){
+            case 1:
+                return 'Aguardando pagamento';
+            case 2:
+                return 'Em análise';
+            case 3:
+                return 'Pago';
+            case 7:
+                return 'Cancelada';
+        }
+        
     }
     
     function consulta($codigoNotificacao){
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://ws.sandbox.pagseguro.uol.com.br/v2/transactions/notifications/'.$codigoNotificacao.'?email=lucas_cd460@hotmail.com&token=75332FD00B3642C3865C96E3EA3AAA11');
-
+        $url = 'https://ws.sandbox.pagseguro.uol.com.br/v2/transactions/'.$codigoNotificacao.'?email=lucas_cd460@hotmail.com&token=75332FD00B3642C3865C96E3EA3AAA11';
+        curl_setopt($ch, CURLOPT_URL, $url);
+        
         
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
         
@@ -24,6 +36,16 @@
         $resultado = simplexml_load_string($xml);
         return $resultado->status;
     }
+    
+    function codigoReferencia($codigoNotificacao){
+        $xml = consulta($codigoNotificacao);
+        libxml_use_internal_errors(true);
+        $resultado = simplexml_load_string($xml);
+        $resposta = (int)$resultado->reference;
+        return $resposta;
+    }
+    
+    
 ?>
 
 

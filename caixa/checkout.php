@@ -1,6 +1,8 @@
 <?php
 include "$_SERVER[DOCUMENT_ROOT]/includes/usa_api.inc.php";
 include "$_SERVER[DOCUMENT_ROOT]/includes/valida_session.inc.php";
+require_once "$_SERVER[DOCUMENT_ROOT]/api/dadosPagamento.php";
+require_once "$_SERVER[DOCUMENT_ROOT]/api/compras.php";
 
 // GRAVATAR
 $email = $dados_usuario[email];
@@ -122,7 +124,7 @@ desired effect
     <!-- Logo -->
     <a href="../index.php" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>bb</b></span>
+      <span class="logo-mini"><b>ET</b></span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg">Easy<b>Trip</b></span>
     </a>
@@ -188,12 +190,9 @@ desired effect
     <section class="sidebar">
 
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel">
-        <?php
-          if(!$dados_usuario[validade]){
-            echo '<a href="../usuario/login.php" class="btn btn-default btn-block btn-sm"><font color="black"><b>Entrar</b></font></a>';
-            echo '<a href="../usuario/cadastro.php" class="btn btn-info btn-block btn-sm"><font color="black"><b>Cadastro</b></font></a>';
-          } else {
+      <?php
+          if($dados_usuario[validade]){
+            echo '<div class="user-panel">';
             echo '<div class="pull-left image">
                     <img src="'.$grav_url.'" class="img-circle" alt="User Image">
                   </div>
@@ -203,10 +202,20 @@ desired effect
                     <!--<a href="#"><i class="fa fa-circle text-success"></i> Online</a>-->
                   </div>
                   </br></br></br>
-                  <a href="../usuario/logout.php" class="btn btn-danger btn-block btn-sm"><i class="fa fa-power-off"></i></a>';
+                  <div class="sidebar-form">
+                    <a href="../usuario/logout.php" class="btn btn-danger btn-block btn-sm">Sair</a>
+                  </div>';
+            echo '</div>';
           }  
-        ?>
-      </div>
+        
+        if(!$dados_usuario[validade]){
+          echo '<div class="sidebar-form">';
+            echo '<a href="../usuario/login.php" class="btn btn-default btn-block btn-sm"><font color="black"><b>Entrar</b></font></a>';
+            echo '<a href="../usuario/cadastro.php" class="btn btn-info btn-block btn-sm"><font color="black"><b>Cadastro</b></font></a>';
+          echo '</div>';
+        }
+      
+      ?>
 
       <!-- search form (Optional)
       <form action="#" method="get" class="sidebar-form">
@@ -263,12 +272,33 @@ desired effect
 
         <div class="box-body">
           <pre>
-            <?php
-              $carrinho = unserialize(urldecode($_GET[carrinho]));
-              print_r($carrinho);
-              var_dump($_GET[id_pagseguro]);
-            ?>
+            <p>
+              <?php
+                $codigoPagseguro = $_GET[id_pagseguro];
+                $estado = estadoPagamento($codigoPagseguro);
+                if ($estado==='Pago'){
+                  $referencia = codigoReferencia($codigoPagseguro);
+                  colocaComoPago($referencia);
+                  echo '<h1>Conta paga com sucesso</h1>';
+                }
+                else{
+                  echo '<h1>Estamos analisando a sua compra</h1>';
+                }
+                
+              ?>
+            </p>
           </pre>
+        </div>
+      </div>      
+      <!-- Your Page Content Here -->
+
+    </section>
+    
+    <section class="content">
+      <div class="box">
+        <div class="box-body">
+          
+
         </div>
       </div>      
       <!-- Your Page Content Here -->

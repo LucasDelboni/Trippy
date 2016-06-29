@@ -11,6 +11,7 @@
         //posicao onde ta a palavra
         $procura = strrpos($le_arquivo,"$palavra");
         
+        
         // string da linha q ele achou a palavra
         $frase =substr($le_arquivo,$procura,10000);
         
@@ -34,6 +35,7 @@
             case 7:
                 return 'Cancelada';
         }
+        return 0;
         /*
 
 4  Disponível: a transação foi paga e chegou ao final de seu prazo de liberação sem ter sido retornada e sem que haja nenhuma disputa aberta.
@@ -49,4 +51,4 @@
         return $numero;
     }
 ?>
-<hi><?php echo estadoCompra('blablal');?></hi>
+<!--<hi><?php //echo estadoCompra(30);?></hi>-->
