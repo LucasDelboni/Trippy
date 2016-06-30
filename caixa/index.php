@@ -89,13 +89,8 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-black layout-boxed sidebar-mini">
-<pre>
-  <?php
-    print_r($_SESSION);
-    print_r($dados_usuario);
-  ?>
-</pre>
+<body class="hold-transition skin-red layout-boxed sidebar-mini">
+
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -351,7 +346,7 @@ desired effect
     
     
     <?php
-      $compras = comprasUsuario($dados_usuario[id]);
+      $compras = comprasUsuarioB($dados_usuario[id]);
       $json = json_encode($compras);
       $itens = json_decode($json,TRUE);
       

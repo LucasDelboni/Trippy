@@ -17,7 +17,7 @@ foreach ($_SESSION[carrinho] as  $item){
     $detalhes =$detalhes.$item[tipo].': '.$item[nome].': '.$item[preco].';';
     $preco = $preco + $item[preco];
 }
-  $resultado = insereCompra($idUsuario, $detalhes, $preco);
+  $resultado = insereCompraB($idUsuario, $detalhes, $preco);
   $idVenda = (int)$resultado->mensagem;
   
 

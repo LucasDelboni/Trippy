@@ -80,13 +80,8 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-black layout-boxed sidebar-mini">
-<pre>
-  <?php
-    print_r($_SESSION);
-    print_r($dados_usuario);
-  ?>
-</pre>
+<body class="hold-transition skin-red layout-boxed sidebar-mini">
+
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -278,7 +273,7 @@ desired effect
                 $estado = estadoPagamento($codigoPagseguro);
                 if ($estado==='Pago'){
                   $referencia = codigoReferencia($codigoPagseguro);
-                  colocaComoPago($referencia);
+                  colocaComoPagoB($referencia);
                   echo '<h1>Conta paga com sucesso</h1>';
                 }
                 else{
@@ -294,16 +289,6 @@ desired effect
 
     </section>
     
-    <section class="content">
-      <div class="box">
-        <div class="box-body">
-          
-
-        </div>
-      </div>      
-      <!-- Your Page Content Here -->
-
-    </section>
     
     <!-- /.content -->
   </div>

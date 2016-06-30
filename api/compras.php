@@ -51,4 +51,83 @@
         
         return $resultado;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    function comprasUsuarioB($idUsuario){
+        $curl = curl_init();
+    
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => 'https://distribuidosrest-ztck.c9users.io/webservice?id='.$idUsuario,
+            CURLOPT_USERAGENT => 'Codular Sample cURL Request'
+        ));
+        
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        
+        
+        $xml = simplexml_load_string($resp, "SimpleXMLElement", LIBXML_NOCDATA);
+        
+        return $xml;
+        
+    }
+    
+    function insereCompraB($idUsuario, $detalhes, $preco){
+        $curl = curl_init();
+    
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => 'https://distribuidosrest-ztck.c9users.io/webservice',
+            CURLOPT_USERAGENT => 'Codular Sample cURL Request',
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => array( 
+                'id' => $idUsuario,
+                'detalhes' => $detalhes,
+                'preco' => $preco
+                )
+        ));
+        
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        
+        $xml = simplexml_load_string($resp, "SimpleXMLElement", LIBXML_NOCDATA);
+        
+        return $xml;
+    }
+    
+    function colocaComoPagoB($id){
+
+        $data = array( 
+                'id' => $id
+                );
+        
+        $curl = curl_init();
+        
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => 'https://distribuidosrest-ztck.c9users.io/webservice',
+            CURLOPT_USERAGENT => 'Codular Sample cURL Request',
+            CURLOPT_CUSTOMREQUEST => "PUT",
+            CURLOPT_POSTFIELDS => http_build_query($data)
+        ));
+        
+        $resp = curl_exec($curl);
+        curl_close($curl);
+
+        
+        $xml = simplexml_load_string($resp, "SimpleXMLElement", LIBXML_NOCDATA);
+        
+        return $xml;
+    }
 ?>
